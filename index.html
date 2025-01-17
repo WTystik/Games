@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Игровой сайт</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="main-container">
+        <h1>Добро пожаловать на Игровой сайт</h1>
+        <input type="text" id="nickname" placeholder="Введите ваш ник" />
+        <button id="select-game-btn">Выбрать игру</button>
+
+        <div id="game-selection" style="display: none;">
+            <button id="start-curve-game">Игра: Кривая</button>
+            <button id="start-mouse-game">Игра: Мышка</button>
+            <button id="start-lamp-game">Игра: Лампочка</button>
+        </div>
+
+        <div id="game-area" style="display: none;">
+            <div id="timer">Время: 0 сек.</div>
+        </div>
+
+        <div id="results" style="display: none;">
+            <h2>Результаты:</h2>
+            <ul id="results-list"></ul>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

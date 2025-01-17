@@ -1,0 +1,124 @@
+/* Общие стили страницы */
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f0f8ff; /* Нежный голубой фон */
+    margin: 0;
+    padding: 0;
+}
+
+/* Контейнер для игры */
+.main-container {
+    padding: 20px;
+}
+#results {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #f8f9fa;
+    border-top: 2px solid #ddd;
+    padding: 10px;
+    overflow-y: auto;
+    max-height: 30%;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+/* Игровая зона */
+#game-area {
+    position: relative;
+    width: 600px;
+    height: 400px;
+    margin: 20px auto;
+    border: 2px solid #000;
+    background-color: #e6f7ff; /* Светлый фон */
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1); /* Легкая тень */
+}
+
+/* Объект, который нужно перетаскивать */
+#draggable-object {
+    width: 20px;
+    height: 20px;
+    background-color: red;
+    border-radius: 50%;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    cursor: pointer; /* Курсор указывает на перетаскиваемый элемент */
+}
+
+/* Препятствия */
+.obstacle {
+    width: 50px;
+    height: 50px;
+    background-color: black;
+    position: absolute;
+    border-radius: 5px; /* Слегка округленные углы */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Легкая тень для препятствий */
+}
+
+/* Цель игры (зеленая мишень) */
+#target {
+    width: 40px;
+    height: 40px;
+    background-color: green;
+    border-radius: 50%;
+    position: absolute;
+    box-shadow: 0 0 5px rgba(0, 255, 0, 0.5); /* Легкая тень для цели */
+}
+
+/* Таймер */
+#timer {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333; /* Темный текст */
+}
+
+/* Стили для дома, норки и мышки */
+#house, #hole, #mouse {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+}
+
+#house {
+    background: url('house.png') no-repeat center/cover;
+    background-size: contain; /* Обеспечиваем правильное масштабирование изображения */
+}
+
+#hole {
+    background: url('hole.png') no-repeat center/cover;
+    background-size: contain; /* Обеспечиваем правильное масштабирование изображения */
+}
+
+#mouse {
+    background: url('mouse.png') no-repeat center/cover;
+    background-size: contain; /* Обеспечиваем правильное масштабирование изображения */
+    display: none; /* Изначально мышка скрыта */
+}
+
+/* Уменьшение размера картинки лампочки */
+#lamp {
+    width: 100px;
+    height: auto;
+    margin-top: 20px;
+}
+
+/* Адаптивность и улучшение дизайна */
+@media (max-width: 768px) {
+    #game-area {
+        width: 100%;
+        height: auto;
+    }
+
+    #draggable-object, .obstacle, #target {
+        width: 15px;
+        height: 15px;
+    }
+
+    #timer {
+        font-size: 16px;
+    }
+}
