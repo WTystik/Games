@@ -49,7 +49,7 @@ function startTimer(seconds) {
 }
 
 function resetGame() {
-    clearInterval(timerInterval); 
+    clearInterval(timerInterval); // Останавливаем таймер
     gameOver = false; 
     gameArea.innerHTML = '';
     playerPosition = null;
