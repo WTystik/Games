@@ -48,6 +48,7 @@ function startTimer(seconds) {
     }, 100);
 }
 
+
 function resetGame() {
     clearInterval(timerInterval); // Останавливаем таймер
     gameOver = false; 
@@ -59,14 +60,75 @@ function resetGame() {
 }
 
 
+let totalScore = 0;
 
+function saveResults() {
+    const results = [];
+    Array.from(resultsList.children).forEach((li) => {
+        const [nickname, score] = li.textContent.split(': ');
+        results.push({ nickname, score: parseInt(score) });
+    });
+
+    localStorage.setItem('leaderboard', JSON.stringify(results));
+}
+
+function loadResults() {
+    const savedResults = localStorage.getItem('leaderboard');
+    if (savedResults) {
+        const results = JSON.parse(savedResults);
+        results.forEach(({ nickname, score }) => {
+            const li = document.createElement('li');
+            li.textContent = `${nickname}: ${score} очков`;
+            resultsList.appendChild(li);
+        });
+    }
+}
 
 function addResult(score) {
-    const li = document.createElement('li');
-    li.textContent = `${nicknameInput.value.trim()}: ${score} очков`;
-    resultsList.appendChild(li);
+    totalScore += score;
+
+    const existingResult = Array.from(resultsList.children).find(
+        (li) => li.textContent.startsWith(nicknameInput.value.trim())
+    );
+
+    if (existingResult) {
+        // Обновляем запись с новым общим счетом
+        let newScore = parseInt(existingResult.textContent.split(': ')[1]) + score;
+        existingResult.textContent = `${nicknameInput.value.trim()}: ${newScore} очков`;
+    } else {
+        // Создаем новую запись, если её еще нет
+        const li = document.createElement('li');
+        li.textContent = `${nicknameInput.value.trim()}: ${score} очков`;
+        resultsList.appendChild(li);
+    }
+
+    // Сортируем результаты по убыванию очков
+    let sortedResults = Array.from(resultsList.children).sort((a, b) => {
+        return parseInt(b.textContent.split(': ')[1]) - parseInt(a.textContent.split(': ')[1]);
+    });
+
+    // Перерисовываем список
+    resultsList.innerHTML = '';
+    sortedResults.forEach((li) => resultsList.appendChild(li));
+
     results.style.display = 'block';
+
+    saveResults(); // Сохраняем обновленный лидерборд
 }
+
+document.getElementById('reset-leaderboard').addEventListener('click', () => {
+    localStorage.removeItem('leaderboard');
+    resultsList.innerHTML = ''; 
+});
+
+
+
+// Загружаем результаты при загрузке страницы
+document.addEventListener('DOMContentLoaded', () => {
+    loadResults();
+});
+
+
 
 // Начать игру "Кривая"
 
@@ -92,6 +154,7 @@ function startCurveGame() {
     let gameOver = false; 
 
     drawPath();
+    drawTarget(); 
     drawPlayer();
     
     function generatePath(width, height) {
@@ -106,7 +169,7 @@ function startCurveGame() {
 
         for (let i = 1; i < numPoints - 1; i++) {
             const x = startX + (endX - startX) * (i / (numPoints - 1));
-            const y = startY + (Math.random() - 0.5) * height / 3; // Рандомная высота
+            const y = startY + (Math.random() - 0.5) * height / 3; 
             path.push({ x: x, y: y });
         }
 
@@ -132,26 +195,30 @@ function startCurveGame() {
         ctx.fill();
     }
 
+    function drawTarget() {
+        const target = path[path.length - 1]; 
+        ctx.fillStyle = 'green';
+        ctx.beginPath();
+        ctx.arc(target.x, target.y, 10, 0, 2 * Math.PI);
+        ctx.fill();
+    }
+
     function checkWin() {
         const distanceToTarget = Math.sqrt(
             (playerPosition.x - path[path.length - 1].x) ** 2 + 
             (playerPosition.y - path[path.length - 1].y) ** 2
         );
     
-        if (distanceToTarget < 20 && !gameOver) { // Проверяем, что игра еще не завершена
+        if (distanceToTarget < 20 && !gameOver) { 
             const timeTaken = (Date.now() - startTime) / 1000;
-            const score = Math.max(0, timeLeft * 10); // Убедитесь, что timeLeft корректен
-            gameOver = true; // Завершаем игру, чтобы цикл не продолжался
+            const score = Math.max(0, timeLeft * 7);
+            gameOver = true;
             
             alert(`Вы выиграли! Ваш результат: ${score} очков. Время: ${timeTaken.toFixed(1)} сек.`);
-            addResult(score); // Добавляем результат
-            setTimeout(resetGame, 100); // Перезагружаем игру
+            addResult(score);
+            setTimeout(resetGame, 100);
         }
     }
-    
-
-    
-
 
     function checkLose() {
         if (gameOver) return;
@@ -175,7 +242,6 @@ function startCurveGame() {
         }
     }
 
-    // Функция для вычисления расстояния от точки до сегмента линии
     function distanceToSegment(lineStart, lineEnd, point) {
         const lineLength = Math.sqrt((lineEnd.x - lineStart.x) ** 2 + (lineEnd.y - lineStart.y) ** 2);
         if (lineLength === 0) return Math.sqrt((point.x - lineStart.x) ** 2 + (point.y - lineStart.y) ** 2);
@@ -196,6 +262,7 @@ function startCurveGame() {
         ctx.clearRect(0, 0, canvas.width, canvas.height); 
 
         drawPath();
+        drawTarget(); 
         drawPlayer();
         checkLose();
         checkWin(); 
@@ -227,16 +294,15 @@ function startCurveGame() {
 }
 
 
-//123 123ыфв  123 12 ывф 321 123 
-
  // Игра "Мышка"
  document.getElementById('start-mouse-game').addEventListener('click', () => {
     startMouseGame();
 });
- function startMouseGame() {
+
+function startMouseGame() {
     gameSelection.style.display = 'none';
     gameArea.style.display = 'block';
-    gameArea.innerHTML = '<div id="timer">Время: 0 сек.</div>'; 
+    gameArea.innerHTML = '<div id="timer">Время: 0 сек.</div>';
 
     const house = document.createElement('div');
     house.id = 'house';
@@ -252,6 +318,8 @@ function startCurveGame() {
 
     const mouse = document.createElement('div');
     mouse.id = 'mouse';
+    mouse.style.width = '27px'; 
+    mouse.style.height = '25px';
     gameArea.appendChild(mouse);
 
     createObstacles(5);
@@ -262,25 +330,67 @@ function startCurveGame() {
         mouse.style.display = 'block';
         mouse.style.top = `${parseInt(house.style.top) + 10}px`;
         mouse.style.left = `${parseInt(house.style.left) + 10}px`;
-        startTimer(5); 
+        startTimer(5);
     });
 
     mouse.addEventListener('mousedown', () => (isDragging = true));
     document.addEventListener('mouseup', () => (isDragging = false));
     document.addEventListener('mousemove', (e) => {
         if (isDragging) {
-            const rect = gameArea.getBoundingClientRect();
-            const x = e.clientX - rect.left - 15;
-            const y = e.clientY - rect.top - 15;
-            mouse.style.left = `${x}px`;
-            mouse.style.top = `${y}px`;
-
-            checkCollision(mouse);
-            checkWin(mouse, hole);
+            moveMouse(e, mouse);
         }
     });
 
     animateMovingObjects(house, hole);
+}
+
+function moveMouse(e, mouse) {
+    const rect = gameArea.getBoundingClientRect();
+    const x = e.clientX - rect.left - 12; 
+    const y = e.clientY - rect.top - 12;
+
+    const maxX = rect.width - mouse.offsetWidth;
+    const maxY = rect.height - mouse.offsetHeight;
+
+    mouse.style.left = `${Math.max(0, Math.min(x, maxX))}px`;
+    mouse.style.top = `${Math.max(0, Math.min(y, maxY))}px`;
+
+    checkCollision(mouse);
+    checkWin(mouse, document.getElementById('hole'));
+}
+
+document.addEventListener('keydown', (e) => {
+    const moveDistance = 10;
+    const gameAreaRect = gameArea.getBoundingClientRect();
+
+    switch (e.key.toLowerCase()) {
+        case 'w': moveElement(house, 0, -moveDistance, gameAreaRect); break;
+        case 'a': moveElement(house, -moveDistance, 0, gameAreaRect); break;
+        case 's': moveElement(house, 0, moveDistance, gameAreaRect); break;
+        case 'd': moveElement(house, moveDistance, 0, gameAreaRect); break;
+
+        case 'i': moveElement(hole, 0, -moveDistance, gameAreaRect); break;
+        case 'j': moveElement(hole, -moveDistance, 0, gameAreaRect); break;
+        case 'k': moveElement(hole, 0, moveDistance, gameAreaRect); break;
+        case 'l': moveElement(hole, moveDistance, 0, gameAreaRect); break;
+    }
+});
+
+function moveElement(element, dx, dy, gameAreaRect) {
+    const elementRect = element.getBoundingClientRect();
+    const minX = gameAreaRect.left;
+    const maxX = gameAreaRect.right - elementRect.width;
+    const minY = gameAreaRect.top;
+    const maxY = gameAreaRect.bottom - elementRect.height;
+
+    let newLeft = elementRect.left + dx;
+    let newTop = elementRect.top + dy;
+
+    newLeft = Math.max(minX, Math.min(newLeft, maxX)) - gameAreaRect.left;
+    newTop = Math.max(minY, Math.min(newTop, maxY)) - gameAreaRect.top;
+
+    element.style.left = `${newLeft}px`;
+    element.style.top = `${newTop}px`;
 }
 
 function animateMovingObjects(house, hole) {
@@ -310,7 +420,6 @@ function checkCollision(mouse) {
             rect1.top < rect2.bottom &&
             rect1.bottom > rect2.top
         ) {
-            const score = -15;
             alert('Вы врезались в препятствие!');
             resetGame();
         }
@@ -328,11 +437,13 @@ function checkWin(mouse, hole) {
     ) {
         const timeTaken = Math.round((Date.now() - startTime) / 100) / 10;
         const score = Math.round((4 - timeTaken) * 10);
+        gameOver = true;
         alert(`Вы выиграли! Ваш результат: ${score} очков`);
         addResult(score);
         resetGame();
     }
 }
+
 
   // Игра "Лампочка"
 

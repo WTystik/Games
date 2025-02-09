@@ -2,9 +2,12 @@
 body {
     font-family: Arial, sans-serif;
     text-align: center;
-    background-color: #f0f8ff; /* Нежный голубой фон */
     margin: 0;
     padding: 0;
+    height: 100vh;
+    background: linear-gradient(-45deg, #ff416c, #ff4b2b, #1e90ff, #00c9ff);
+    background-size: 400% 400%;
+    animation: gradientBG 8s infinite alternate ease-in-out;
 }
 
 /* Контейнер для игры */
@@ -13,18 +16,46 @@ body {
 }
 #results {
     position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: #f8f9fa;
-    border-top: 2px solid #ddd;
-    padding: 10px;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(to right, #ffffff, #f8f9fa);
+    border-radius: 15px;
+    padding: 15px;
+    width: 80%;
+    max-width: 600px;
+    max-height: 40%;
     overflow-y: auto;
-    max-height: 30%;
-    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease-in-out;
 }
-/* Игровая зона */
+
+#results h2 {
+    color: #007BFF;
+    margin-top: 0;
+    font-size: 22px;
+}
+
+/* Лидерборд - список игроков */
+#results ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#results li {
+    background: linear-gradient(to right, #eef9ff, #d4edfc);
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 10px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+}
+
 #game-area {
     position: relative;
     width: 600px;
@@ -48,24 +79,23 @@ body {
     cursor: pointer; /* Курсор указывает на перетаскиваемый элемент */
 }
 
-/* Препятствия */
 .obstacle {
     width: 50px;
     height: 50px;
-    background-color: black;
+    background: linear-gradient(to bottom, #2c3e50, #34495e);
     position: absolute;
-    border-radius: 5px; /* Слегка округленные углы */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Легкая тень для препятствий */
+    border-radius: 10px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
 }
 
-/* Цель игры (зеленая мишень) */
+
 #target {
     width: 40px;
     height: 40px;
     background-color: green;
     border-radius: 50%;
     position: absolute;
-    box-shadow: 0 0 5px rgba(0, 255, 0, 0.5); /* Легкая тень для цели */
+    box-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
 }
 
 /* Таймер */
@@ -73,40 +103,91 @@ body {
     font-size: 18px;
     font-weight: bold;
     margin-bottom: 10px;
-    color: #333; /* Темный текст */
+    color: #333; 
 }
 
-/* Стили для дома, норки и мышки */
+
 #house, #hole, #mouse {
     position: absolute;
-    width: 30px;
-    height: 30px;
+    width: 50px;
+    height: 50px;
 }
 
 #house {
     background: url('house.png') no-repeat center/cover;
-    background-size: contain; /* Обеспечиваем правильное масштабирование изображения */
+    background-size: contain;
 }
 
 #hole {
     background: url('hole.png') no-repeat center/cover;
-    background-size: contain; /* Обеспечиваем правильное масштабирование изображения */
+    background-size: contain; 
 }
 
 #mouse {
     background: url('mouse.png') no-repeat center/cover;
-    background-size: contain; /* Обеспечиваем правильное масштабирование изображения */
-    display: none; /* Изначально мышка скрыта */
+    background-size: contain; 
+    display: none; 
 }
 
-/* Уменьшение размера картинки лампочки */
+
 #lamp {
     width: 100px;
     height: auto;
     margin-top: 20px;
 }
 
-/* Адаптивность и улучшение дизайна */
+.game-button {
+    display: inline-block;
+    padding: 15px 30px;
+    font-size: 18px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: white;
+    background: linear-gradient(90deg, #007BFF, #0056b3);
+    border: none;
+    border-radius: 30px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    margin: 10px;
+}
+
+.game-button:hover {
+    background: linear-gradient(90deg, #0056b3, #004494);
+    transform: scale(1.05);
+}
+
+.game-button:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+button {
+    display: inline-block;
+    padding: 12px 25px;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: white;
+    background: linear-gradient(90deg, #28a745, #218838);
+    border: none;
+    border-radius: 25px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    margin: 10px;
+}
+
+button:hover {
+    background: linear-gradient(90deg, #218838, #1e7e34);
+    transform: scale(1.05);
+}
+
+button:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
 @media (max-width: 768px) {
     #game-area {
         width: 100%;
@@ -121,4 +202,15 @@ body {
     #timer {
         font-size: 16px;
     }
+
+    #results {
+        width: 90%;
+        font-size: 14px;
+    }
+}
+
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
