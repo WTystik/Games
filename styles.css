@@ -38,7 +38,6 @@ body {
     font-size: 22px;
 }
 
-/* Лидерборд - список игроков */
 #results ul {
     list-style: none;
     padding: 0;
@@ -62,12 +61,11 @@ body {
     height: 400px;
     margin: 20px auto;
     border: 2px solid #000;
-    background-color: #e6f7ff; /* Светлый фон */
+    background-color: #e6f7ff; 
     border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1); /* Легкая тень */
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1); 
 }
 
-/* Объект, который нужно перетаскивать */
 #draggable-object {
     width: 20px;
     height: 20px;
@@ -76,7 +74,7 @@ body {
     position: absolute;
     top: 10px;
     left: 10px;
-    cursor: pointer; /* Курсор указывает на перетаскиваемый элемент */
+    cursor: pointer; 
 }
 
 .obstacle {
@@ -186,6 +184,38 @@ button:hover {
 button:active {
     transform: scale(0.98);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+#info-box {
+    display: none; 
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+    width: 250px;
+    padding: 15px;
+    background: linear-gradient(135deg, #4facfe, #00f2fe); 
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Анимация появления */
+#info-box.show {
+    display: block;
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+}
+
+/* Анимация исчезновения */
+#info-box.hide {
+    opacity: 0;
+    transform: translateY(-50%) translateX(10px);
 }
 
 @media (max-width: 768px) {

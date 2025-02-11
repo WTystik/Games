@@ -19,7 +19,9 @@ document.addEventListener('DOMContentLoaded', () => {
         selectGameBtn.style.display = 'none'; 
         nicknameInput.style.display = 'none'; 
     });
-    
+
+
+
 function createObstacles(count) {
     for (let i = 0; i < count; i++) {
         const obstacle = document.createElement('div');
@@ -29,6 +31,32 @@ function createObstacles(count) {
         gameArea.appendChild(obstacle);
     }
 }
+
+
+function showInfo(text) {
+    const infoBox = document.getElementById("info-box");
+    const infoText = document.getElementById("info-text");
+
+    infoText.innerHTML = text;
+    infoBox.style.display = "block";
+    setTimeout(() => {
+        infoBox.classList.add("show");
+        infoBox.classList.remove("hide");
+    }, 10);
+}
+
+// Функция для скрытия информации после завершения игры
+function hideInfo() {
+    const infoBox = document.getElementById("info-box");
+
+    infoBox.classList.add("hide");
+    infoBox.classList.remove("show");
+
+    setTimeout(() => {
+        infoBox.style.display = "none";
+    }, 300);
+}
+
 
 
 function startTimer(seconds) {
@@ -51,6 +79,7 @@ function startTimer(seconds) {
 
 function resetGame() {
     clearInterval(timerInterval); // Останавливаем таймер
+    hideInfo();                   // Скрываем информационный блок
     gameOver = false; 
     gameArea.innerHTML = '';
     playerPosition = null;
@@ -132,7 +161,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Начать игру "Кривая"
 
-document.getElementById('start-curve-game').addEventListener('click', () => {
+document.getElementById("start-curve-game").addEventListener("click", function() {
+    showInfo("Проведите объект по извилистой кривой линии за заданное время!");
     startCurveGame();
 });
 
@@ -295,7 +325,8 @@ function startCurveGame() {
 
 
  // Игра "Мышка"
- document.getElementById('start-mouse-game').addEventListener('click', () => {
+ document.getElementById("start-mouse-game").addEventListener("click", function() {
+    showInfo("Ваша задача – довести мышку до норки, избегая препятствий!");
     startMouseGame();
 });
 
@@ -447,9 +478,11 @@ function checkWin(mouse, hole) {
 
   // Игра "Лампочка"
 
-  document.getElementById('start-lamp-game').addEventListener('click', () => {
+  document.getElementById("start-lamp-game").addEventListener("click", function() {
+    showInfo("Дождитесь загорания лампочки, посчитайте время ее горения и напишите его с точностью до десятых секунды!");
     startLampGame();
 });
+
 function startLampGame() {
     gameSelection.style.display = 'none';
     gameArea.style.display = 'block';
