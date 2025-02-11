@@ -70,7 +70,8 @@ function startTimer(seconds) {
 
         if (remaining <= 0) {
             clearInterval(timerInterval);
-            alert('Время вышло!');
+            alert('Время вышло! Ваш результат: -10 очков');
+            addResult(-10);
             resetGame();
         }
     }, 100);
@@ -114,6 +115,7 @@ function loadResults() {
 }
 
 function addResult(score) {
+    score = Math.round(score * 10) / 10;
     totalScore += score;
 
     const existingResult = Array.from(resultsList.children).find(
@@ -241,7 +243,7 @@ function startCurveGame() {
     
         if (distanceToTarget < 20 && !gameOver) { 
             const timeTaken = (Date.now() - startTime) / 1000;
-            const score = Math.max(0, timeLeft * 7);
+            const score = Math.max(0, timeLeft * 3);
             gameOver = true;
             
             alert(`Вы выиграли! Ваш результат: ${score} очков. Время: ${timeTaken.toFixed(1)} сек.`);
@@ -451,11 +453,13 @@ function checkCollision(mouse) {
             rect1.top < rect2.bottom &&
             rect1.bottom > rect2.top
         ) {
-            alert('Вы врезались в препятствие!');
+            alert('Вы врезались! Ваш результат: -7.5 очков');
+            addResult(-7.5);
             resetGame();
         }
     });
 }
+
 
 function checkWin(mouse, hole) {
     const rect1 = mouse.getBoundingClientRect();
@@ -466,15 +470,22 @@ function checkWin(mouse, hole) {
         rect1.top < rect2.bottom &&
         rect1.bottom > rect2.top
     ) {
-        const timeTaken = Math.round((Date.now() - startTime) / 100) / 10;
-        const score = Math.round((4 - timeTaken) * 10);
+        const timeTaken = (Date.now() - startTime) / 1000; // время в секундах
+        let score;
+        if (timeTaken <= 1) {
+            score = 15;
+        } else if (timeTaken >= 4) {
+            score = 5;
+        } else {
+            // Линейная интерполяция от 15 до 5 очков при времени от 1 до 4 секунд:
+            score = 15 - ((timeTaken - 1) * (10 / 3));
+        }
         gameOver = true;
-        alert(`Вы выиграли! Ваш результат: ${score} очков`);
+        alert(`Вы выиграли! Ваш результат: ${score.toFixed(1)} очков`);
         addResult(score);
         resetGame();
     }
 }
-
 
   // Игра "Лампочка"
 
@@ -514,12 +525,27 @@ function startLampGame() {
 function showInputForTime(onTime) {
     const inputWrapper = document.createElement('div');
     inputWrapper.id = 'input-wrapper';
-    inputWrapper.innerHTML = `Введите время горения лампочки (с точностью до 0.1): <input type="number" step="0.1" id="time-input"> <button id="submit-time">Отправить</button>`;
+    inputWrapper.innerHTML = `Введите время горения лампочки (с точностью до 0.1): 
+        <input type="number" step="0.1" id="time-input"> 
+        <button id="submit-time">Отправить</button>`;
     gameArea.appendChild(inputWrapper);
 
     document.getElementById('submit-time').addEventListener('click', () => {
         const userTime = parseFloat(document.getElementById('time-input').value);
-        const score = Math.round((userTime - onTime) * 5 * 10) / 10;
+        const error = Math.abs(userTime - onTime);
+        let score;
+
+        if (error <= 1) {
+            score = 25 * (1 - (Math.abs(error - 0.1) / 0.9));
+            if (score < 0) score = 0;
+        } else if (error <= 2) {
+            score = -25 * ((error - 1) / 1);
+        } else {
+            score = -25;
+        }
+
+        score = Math.round(score * 10) / 10;
+
         alert(`Ваш результат: ${score} очков`);
         addResult(score);
         resetGame();
